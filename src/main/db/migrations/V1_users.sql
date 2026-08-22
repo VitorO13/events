@@ -1,8 +1,8 @@
 CREATE table users{
     
     id TEXT primary key unique not null,
-    email TEXT not null unique,
-    password TEXT not null,
-    role TEXT not null
+    email  not null unique,
+    password  not null,
+    role  not null
     
 }
