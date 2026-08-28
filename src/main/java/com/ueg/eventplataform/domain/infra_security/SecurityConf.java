@@ -23,11 +23,12 @@ public class SecurityConf {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users").hasRole("User")
                         .requestMatchers(HttpMethod.GET, "/events").permitAll()
                         .requestMatchers(HttpMethod.GET, "/events/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/events/{id}/participants").hasRole("HOST")
-                        .requestMatchers(HttpMethod.GET, "/events/{id}/comments").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/events/{id}/participants").hasRole("User")
+                        .requestMatchers(HttpMethod.GET, "/events/hosting").hasRole("Host")
+                        .requestMatchers(HttpMethod.GET, "admin/console").hasRole("Admin")
                         .anyRequest().authenticated())
                 .build();
     }

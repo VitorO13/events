@@ -11,8 +11,11 @@ import com.ueg.eventplataform.repositories.UserRepository;
 @Service
 public class UserAuth implements UserDetailsService{
     
-    @Autowired
-    UserRepository repository;
+    final UserRepository repository;
+
+    UserAuth(UserRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -20,3 +23,4 @@ public class UserAuth implements UserDetailsService{
         return repository.findByEmail(username);
     }
 }
+

@@ -24,7 +24,7 @@ public class Event {
     private UUID id;
     private String name;
     private String hour;
-    private int duration;
+    private byte duration;
     private Date date;
     private boolean remote;
 
