@@ -28,7 +28,7 @@ public class SecurityConf {
                         .requestMatchers(HttpMethod.GET, "/events/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/events/{id}/participants").hasRole("User")
                         .requestMatchers(HttpMethod.GET, "/events/hosting").hasRole("Host")
-                        .requestMatchers(HttpMethod.GET, "admin/console").hasRole("Admin")
+                        .requestMatchers(HttpMethod.GET, "/admin/console").hasRole("Admin")
                         .anyRequest().authenticated())
                 .build();
     }
