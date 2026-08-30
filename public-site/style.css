@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+#lista-eventos {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#lista-eventos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.evento-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fafafa;
+}
+
+.evento-card h3 {
+    margin: 0 0 5px 0;
+    color: #222;
+}
+
+.tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.tag-remoto {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.tag-presencial {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+#form-inscricao {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin-top: 20px;
+}
+
+#form-inscricao label {
+    font-weight: bold;
+    color: #333;
+}
+
+#form-inscricao input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+#form-inscricao input:focus {
+    outline: none;
+    border-color: #4a90d9;
+}
+
+#form-inscricao button {
+    padding: 12px;
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#form-inscricao button:hover {
+    background-color: #3a75b0;
+}
+
+.erro {
+    display: block;
+    color: #c0392b;
+    font-size: 0.85em;
+    min-height: 18px;
+}
+
+#mensagem-sucesso {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.sucesso-escondido {
+    display: none;
+}
