@@ -7,30 +7,47 @@ const listaEventos = document.getElementById("lista-eventos");
 
 listaEventos.innerHTML = "";
 
+const seletorEvento = document.getElementById("evento");
+
 eventosFingidos.forEach(evento => {
-    const card = document.createElement("div");
-    card.className = "evento-card";
-
-    const nome = document.createElement("h3");
-    nome.textContent = evento.nome;
-
-    const data = document.createElement("p");
-    data.textContent = "📅 " + evento.data;
-
-    const modalidade = document.createElement("span");
-    modalidade.className = evento.remoto ? "tag tag-remoto" : "tag tag-presencial";
-    modalidade.textContent = evento.remoto ? "Remoto" : "Presencial";
-
-    card.appendChild(nome);
-    card.appendChild(data);
-    card.appendChild(modalidade);
-
-    listaEventos.appendChild(card);
+    const opcao = document.createElement("option");
+    opcao.value = evento.nome;
+    opcao.textContent = evento.nome + " - " + evento.data;
+    seletorEvento.appendChild(opcao);
 });
+
+function renderizarEventos(listaParaMostrar) {
+    listaEventos.innerHTML = "";
+
+    listaParaMostrar.forEach(evento => {
+        const card = document.createElement("div");
+        card.className = "evento-card";
+
+        const nome = document.createElement("h3");
+        nome.textContent = evento.nome;
+
+        const data = document.createElement("p");
+        data.textContent = "📅 " + evento.data;
+
+        const modalidade = document.createElement("span");
+        modalidade.className = evento.remoto ? "tag tag-remoto" : "tag tag-presencial";
+        modalidade.textContent = evento.remoto ? "Remoto" : "Presencial";
+
+        card.appendChild(nome);
+        card.appendChild(data);
+        card.appendChild(modalidade);
+
+        listaEventos.appendChild(card);
+    });
+}
+
+renderizarEventos(eventosFingidos);
 
 const formInscricao = document.getElementById("form-inscricao");
 const erroNome = document.getElementById("erro-nome");
 const erroEmail = document.getElementById("erro-email");
+const erroEvento = document.getElementById("erro-evento");
+const erroTelefone = document.getElementById("erro-telefone");
 
 function emailValido(email) {
     return email.includes("@") && email.includes(".");
@@ -41,9 +58,12 @@ formInscricao.addEventListener("submit", function(evento) {
 
     const nome = document.getElementById("nome").value;
     const email = document.getElementById("email").value;
+    const eventoEscolhido = document.getElementById("evento").value;
 
     erroNome.textContent = "";
     erroEmail.textContent = "";
+    erroEvento.textContent = "";
+    erroTelefone.textContent = "";
 
     let temErro = false;
 
@@ -57,6 +77,19 @@ formInscricao.addEventListener("submit", function(evento) {
         temErro = true;
     }
 
+    if (eventoEscolhido === "") {
+        erroEvento.textContent = "Selecione um evento.";
+        temErro = true;
+    }
+
+    const telefone = document.getElementById("telefone").value;
+    const apenasNumeros = telefone.replace(/\D/g, "");
+
+    if (telefone.trim() !== "" && apenasNumeros.length < 10) {
+        erroTelefone.textContent = "Digite um telefone válido (com DDD).";
+        temErro = true;
+    }
+
     if (temErro) {
         return;
     }
@@ -64,9 +97,22 @@ formInscricao.addEventListener("submit", function(evento) {
     console.log("Inscrição recebida:");
     console.log("Nome: " + nome);
     console.log("E-mail: " + email);
+    console.log("Evento: " + eventoEscolhido);
 
     const mensagemSucesso = document.getElementById("mensagem-sucesso");
     mensagemSucesso.classList.remove("sucesso-escondido");
 
     formInscricao.reset();
+});
+
+const campoBusca = document.getElementById("busca-evento");
+
+campoBusca.addEventListener("input", function() {
+    const termoBuscado = campoBusca.value.toLowerCase();
+
+    const eventosFiltrados = eventosFingidos.filter(evento =>
+        evento.nome.toLowerCase().includes(termoBuscado)
+    );
+
+    renderizarEventos(eventosFiltrados);
 });

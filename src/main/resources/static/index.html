@@ -2,12 +2,20 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Eventos</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Eventos Disponíveis</h1>
+    <header>
+        <h1>Plataforma de Eventos</h1>
+        <p class="subtitulo">Encontre e inscreva-se nos próximos eventos</p>
+    </header>
+
+    <h2 class="titulo-secao">Eventos Disponíveis</h2>
+
+    <input type="text" id="busca-evento" placeholder="Buscar evento pelo nome...">
 
     <div id="lista-eventos">
         <p>Carregando eventos...</p>
@@ -23,12 +31,26 @@
         <input type="email" id="email" required>
         <span class="erro" id="erro-email"></span>
 
+        <label for="telefone">Telefone:</label>
+        <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+        <span class="erro" id="erro-telefone"></span>
+
+        <label for="evento">Evento:</label>
+        <select id="evento">
+            <option value="">Selecione um evento</option>
+        </select>
+        <span class="erro" id="erro-evento"></span>
+
         <button type="submit">Confirmar Inscrição</button>
     </form>
 
     <div id="mensagem-sucesso" class="sucesso-escondido">
         ✅ Inscrição confirmada com sucesso!
     </div>
+    <footer>
+        <p>Plataforma de Gestão de Eventos © 2026</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
