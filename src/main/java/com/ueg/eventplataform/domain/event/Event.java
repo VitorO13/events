@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -20,13 +21,15 @@ import lombok.Setter;
 public class Event {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private String hour;
     private byte duration;
     private Date date;
-    private boolean remote;
+    private String description;
+    private int capacity;
+    
 
 
 

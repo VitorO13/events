@@ -11,7 +11,10 @@ import jakarta.validation.Valid;
 import com.ueg.eventplataform.repositories.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.ueg.eventplataform.domain.infra_security.TokenService;
 import com.ueg.eventplataform.domain.users.AuthenticationDTO;
+import com.ueg.eventplataform.domain.users.LoginRespDTO;
 import com.ueg.eventplataform.domain.users.RegisterDTO;
 import com.ueg.eventplataform.domain.users.User;
 
@@ -20,6 +23,9 @@ import com.ueg.eventplataform.domain.users.User;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    @Autowired 
+    private TokenService tokenService;
+
     private final AuthenticationManager authenticationManager;
     
     private final UserRepository userRepository;
@@ -33,7 +39,10 @@ public class AuthController {
     public ResponseEntity login (@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var authentication = authenticationManager.authenticate(usernamePassword);
-      return ResponseEntity.ok().build();
+
+        var token = tokenService.generateToken((User) authentication.getPrincipal());
+        
+        return ResponseEntity.ok(new LoginRespDTO(token));
     }
 
     @PostMapping("/register")
