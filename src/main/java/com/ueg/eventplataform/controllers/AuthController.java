@@ -17,6 +17,7 @@ import com.ueg.eventplataform.domain.users.AuthenticationDTO;
 import com.ueg.eventplataform.domain.users.LoginRespDTO;
 import com.ueg.eventplataform.domain.users.RegisterDTO;
 import com.ueg.eventplataform.domain.users.User;
+import com.ueg.eventplataform.domain.users.UserRole;
 
 
 
@@ -46,15 +47,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register (@RequestBody @Valid RegisterDTO data) {
-        if(this.userRepository.findByEmail(data.email()) != null)return ResponseEntity.badRequest().build();
-           
-            String hashedPassword = new BCryptPasswordEncoder().encode(data.password());
-            User newUser = new User(data.email(), hashedPassword, data.role());
-            this.userRepository.save(newUser);
-            return ResponseEntity.ok().build();
-        
-    }
-    
+public ResponseEntity register (@RequestBody @Valid RegisterDTO data) {
+    if(this.userRepository.findByEmail(data.email()) != null) {
+        return ResponseEntity.badRequest().build();
+    }  
+    String hashedPassword = new BCryptPasswordEncoder().encode(data.password());
+    User newUser = new User(data.name(), data.email(), hashedPassword, UserRole.USER); 
+    this.userRepository.save(newUser);
+    return ResponseEntity.ok().build();
+}
 
 }

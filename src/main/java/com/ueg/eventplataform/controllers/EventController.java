@@ -31,14 +31,14 @@ public class EventController {
         this.eventRepository = eventRepository;
     }
 
-    @PostMapping("/create-events")
+    @PostMapping("/create")
     public ResponseEntity createEvent(@RequestBody @Valid EventDTO data) {
         Event newEvent = new Event(null, data.name(), data.hour(), data.duration(), data.date(), data.description(), data.capacity());
         this.eventRepository.save(newEvent);
         return ResponseEntity.status(201).build();
      }
 
-    @GetMapping("/list-events")
+    @GetMapping("/list")
     public String getMethodName(@RequestParam String param) {
         if(eventRepository .findByName(param) != null) {
             return eventRepository.findByName(param).toString();
