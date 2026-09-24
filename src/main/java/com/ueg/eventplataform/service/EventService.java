@@ -19,7 +19,7 @@ public class EventService {
         this.eventMapper = eventMapper;
     }
 
-    public Event criarEvento(EventDTO data) {
+    public Event createEvent(EventDTO data) {
         if (this.eventRepository.findByName(data.name()) != null) {
             throw new IllegalArgumentException("Já existe um evento cadastrado com este nome.");
         }
