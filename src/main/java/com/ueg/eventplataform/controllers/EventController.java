@@ -1,19 +1,22 @@
 package com.ueg.eventplataform.controllers;
 
-import com.ueg.eventplataform.repositories.UserRepository;
+import com.ueg.eventplataform.service.EventService;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ueg.eventplataform.domain.event.Event;
 import com.ueg.eventplataform.domain.event.EventDTO;
 import com.ueg.eventplataform.repositories.EventRepository;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -23,30 +26,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/events")
 
 public class EventController {
+private final EventService eventService;
 
-    private final EventRepository eventRepository;
-
-
-    EventController(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity createEvent(@RequestBody @Valid EventDTO data) {
-        Event newEvent = new Event(null, data.name(), data.hour(), data.duration(), data.date(), data.description(), data.capacity());
-        this.eventRepository.save(newEvent);
-        return ResponseEntity.status(201).build();
-     }
+    @PostMapping
+    public ResponseEntity<Event> createEvent(@RequestBody @Valid EventDTO data) {
+        Event createdEvent = this.eventService.criarEvento(data);
+        return ResponseEntity.status(201).body(createdEvent);
+    }
 
-    @GetMapping("/list")
-    public String getMethodName(@RequestParam String param) {
-        if(eventRepository .findByName(param) != null) {
-            return eventRepository.findByName(param).toString();
-        }
-        return new String();
-    
-    
+    @GetMapping
+    public ResponseEntity<List<Event>> listEvents(@RequestParam(name = "nome", required = false) String nome) {
+        List<Event> eventos = this.eventService.listEvents(nome);
+        return ResponseEntity.ok(eventos);
+    }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Event> getEventById(@PathVariable UUID id) {
+        Event evento = this.eventService.searchById(id);
+        return ResponseEntity.ok(evento);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable UUID id, @RequestBody @Valid EventDTO data) {
+        Event eventoAtualizado = this.eventService.updateEvent(id, data);
+        return ResponseEntity.ok(eventoAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable UUID id) {
+        this.eventService.deleteEvent(id);
+        return ResponseEntity.noContent().build();
     }
 }
   

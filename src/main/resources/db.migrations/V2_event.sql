@@ -1,6 +1,6 @@
 Create table events{
     
-    id TEXT primary key unique not null,
+    id UUID primary key unique not null,
     name TEXT not null,
     hour TEXT not null,
     duration TEXT not null,
