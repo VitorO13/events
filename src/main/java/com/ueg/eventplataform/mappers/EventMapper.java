@@ -3,9 +3,10 @@ package com.ueg.eventplataform.mappers;
 import com.ueg.eventplataform.domain.event.Event;
 import com.ueg.eventplataform.domain.event.EventDTO;
 
-public class EventMapper {
+@Mapper(componentModel = "spring")
+public interface EventMapper {
 
-   public Event toEntity(EventDTO dto) {
+   public default Event toEntity(EventDTO dto) {
         return new Event(
                 null,
                 dto.name(),
@@ -17,7 +18,7 @@ public class EventMapper {
         );
     }
 
-    public EventDTO toDTO(Event event) {
+    public default EventDTO toDTO(Event event) {
         return new EventDTO(
                 null, 
                 event.getName(),

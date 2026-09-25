@@ -50,8 +50,8 @@ private final EventService eventService;
 
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable UUID id, @RequestBody @Valid EventDTO data) {
-        Event eventoAtualizado = this.eventService.updateEvent(id, data);
-        return ResponseEntity.ok(eventoAtualizado);
+        Event updatedEvent = this.eventService.updateEvent(id, data);
+        return ResponseEntity.ok(updatedEvent);
     }
 
     @DeleteMapping("/{id}")

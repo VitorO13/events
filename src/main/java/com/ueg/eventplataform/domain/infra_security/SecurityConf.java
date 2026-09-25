@@ -25,13 +25,23 @@ public class SecurityConf {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/events/list-events").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/events/create-events").hasRole("HOST")
-                        .requestMatchers(HttpMethod.GET, "/admin/console").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                        .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/users/{id}/role").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN")
+
+                    // 2. Rotas de Eventos - Leitura (Abertas para todos)
+                    .requestMatchers(HttpMethod.GET, "/events").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/events/{id}").permitAll()
+
+                    // 3. Rotas de Eventos - Modificação (Restritas ao Organizador/Admin)
+                    // Substitua "ADMIN" ou "HOST" pelo nome exato que está no seu Enum UserRole
+                    .requestMatchers(HttpMethod.POST, "/events").hasRole("Host") 
+                    .requestMatchers(HttpMethod.PUT, "/events/{id}").hasRole("Admin")
+                    .requestMatchers(HttpMethod.DELETE, "/events/{id}").hasRole("Admin")
+                    .anyRequest().authenticated())
+                    .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
         }
     @Bean
