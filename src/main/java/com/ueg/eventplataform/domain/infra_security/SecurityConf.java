@@ -31,17 +31,21 @@ public class SecurityConf {
                     .requestMatchers(HttpMethod.PUT, "/users/{id}/role").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN")
 
-                    // 2. Rotas de Eventos - Leitura (Abertas para todos)
+                    // 2. Rotas de Eventos                     
                     .requestMatchers(HttpMethod.GET, "/events").permitAll()
                     .requestMatchers(HttpMethod.GET, "/events/{id}").permitAll()
+                    //3 Rota QrCode
+                    .requestMatchers(HttpMethod.GET, "/registrations/*/qrcode").authenticated()
+                    .requestMatchers(HttpMethod.PATCH, "/registrations/*/checkin").hasRole("ADMIN")
 
-                    // 3. Rotas de Eventos - Modificação (Restritas ao Organizador/Admin)
-                    // Substitua "ADMIN" ou "HOST" pelo nome exato que está no seu Enum UserRole
+                    // 3. Rotas de Eventos
                     .requestMatchers(HttpMethod.POST, "/events").hasRole("Host") 
                     .requestMatchers(HttpMethod.PUT, "/events/{id}").hasRole("Admin")
                     .requestMatchers(HttpMethod.DELETE, "/events/{id}").hasRole("Admin")
                     .anyRequest().authenticated())
                     .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+
+                    
                 .build();
         }
     @Bean

@@ -5,26 +5,43 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import com.ueg.eventplataform.domain.event.Event;
 import com.ueg.eventplataform.domain.event.EventDTO;
-import com.ueg.eventplataform.mappers.EventMapper;
 import com.ueg.eventplataform.repositories.EventRepository;
 
 @Service 
 public class EventService {
     
     private final EventRepository eventRepository;
-    private final EventMapper eventMapper;
+   
 
-    public EventService(EventRepository eventRepository, EventMapper eventMapper) {
+    public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
+      
+    }
+
+    private Event toEntity(EventDTO data) {
+        Event event = new Event();
+        event.setName(data.name());
+        event.setHour(data.hour());
+        event.setDuration(data.duration());
+        event.setDate(data.date());
+        event.setDescription(data.description());
+        event.setCapacity(data.capacity());
+        return event;
     }
 
     public Event createEvent(EventDTO data) {
         if (this.eventRepository.findByName(data.name()) != null) {
             throw new IllegalArgumentException("Já existe um evento cadastrado com este nome.");
         }
-        
-        Event newEvent = this.eventMapper.toEntity(data);
+
+        Event newEvent = new Event();
+        newEvent.setName(data.name());
+        newEvent.setHour(data.hour());
+        newEvent.setDuration(data.duration());
+        newEvent.setDate(data.date());
+        newEvent.setDescription(data.description());
+        newEvent.setCapacity(data.capacity());
+
         return this.eventRepository.save(newEvent);
     }
 

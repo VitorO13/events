@@ -1,6 +1,5 @@
 package com.ueg.eventplataform.service;
 
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,5 +21,6 @@ public class UserAuth implements UserDetailsService{
        
         return repository.findByEmail(username);
     }
+    
 }
 
