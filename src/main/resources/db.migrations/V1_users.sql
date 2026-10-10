@@ -5,4 +5,4 @@ CREATE table users{
     password  not null,
     role  not null
     
-}
+};

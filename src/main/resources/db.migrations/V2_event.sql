@@ -7,5 +7,7 @@ Create table events{
     date TEXT not null,
     description TEXT not null,
     capacity INTEGER not null
+    id_user foreign key references users(id) not null
+
     
-}
+};

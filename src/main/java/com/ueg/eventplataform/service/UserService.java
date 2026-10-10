@@ -7,6 +7,10 @@ import com.ueg.eventplataform.repositories.EventRepository;
 import com.ueg.eventplataform.repositories.RegistrationRepository;
 import com.ueg.eventplataform.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,38 +22,46 @@ public class UserService {
     private final EventRepository eventRepository;
     private final RegistrationRepository registrationRepository;
 
-    public UserService(UserRepository userRepository, EventRepository eventRepository, RegistrationRepository registrationRepository) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository,
+            RegistrationRepository registrationRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.registrationRepository = registrationRepository;
     }
 
-   
+    @Transactional
     public void deleteUser(UUID id) {
         if (!this.userRepository.existsById(id)) {
-            throw new RuntimeException("Utilizador não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
+        }
+        if (this.registrationRepository.existsByUserId(id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "O usuário possui inscrições e não pode ser excluído.");
         }
         this.userRepository.deleteById(id);
     }
 
-
-    public void registerUserToEvent(UUID userId, UUID eventId) {
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public Registration registerUserToEvent(UUID userId, UUID eventId) {
         User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilizador não encontrado."));
-        
-        Event event = this.eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Evento não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+
+        // Serializa as inscrições no mesmo evento até o fim da transação.
+        Event event = this.eventRepository.findByIdForUpdate(eventId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado."));
+        if (this.registrationRepository.existsByUserIdAndEventId(userId, eventId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuário já inscrito neste evento.");
+        }
 
         long currentRegistrations = this.registrationRepository.countByEventId(eventId);
         if (currentRegistrations >= event.getCapacity()) {
-            throw new RuntimeException("Atenção: O evento já atingiu a lotação máxima.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "O evento já atingiu a lotação máxima.");
         }
         Registration registration = new Registration();
         registration.setUser(user);
         registration.setEvent(event);
         registration.setRegistrationDate(LocalDateTime.now());
 
-        this.registrationRepository.save(registration);
+        return this.registrationRepository.save(registration);
     }
 }
-

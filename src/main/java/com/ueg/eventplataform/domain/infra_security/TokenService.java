@@ -15,7 +15,7 @@ import com.ueg.eventplataform.domain.users.User;
 
 @Service
 public class TokenService {
-@Value("${security.jwt.secret}")
+    @Value("${security.jwt.secret}")
 
     private String secret;
 
@@ -32,9 +32,8 @@ public class TokenService {
             throw new RuntimeException("Error while generating token", exception);
         }
     }
-     
 
-    public String validateToken (String token) {
+    public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -46,6 +45,7 @@ public class TokenService {
             throw new RuntimeException("Invalid or expired token", exception);
         }
     }
+
     private Instant genExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }

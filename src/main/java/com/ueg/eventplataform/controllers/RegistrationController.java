@@ -1,8 +1,10 @@
 package com.ueg.eventplataform.controllers;
 
-import com.ueg.eventplataform.domain.registration.Registration;
-import com.ueg.eventplataform.repositories.RegistrationRepository;
-import com.ueg.eventplataform.service.QRCodeService;
+import com.ueg.eventplataform.domain.registration.RegistrationResponseDTO;
+import com.ueg.eventplataform.domain.users.User;
+import com.ueg.eventplataform.service.RegistrationService;
+import com.ueg.eventplataform.service.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,34 +14,32 @@ import java.util.UUID;
 @RequestMapping("/registrations")
 public class RegistrationController {
 
-    private final QRCodeService qrCodeService;
-    private final RegistrationRepository registrationRepository;
+    private final RegistrationService registrationService;
+    private final UserService userService;
 
     // Injeção de dependências no construtor
-    public RegistrationController(QRCodeService qrCodeService, RegistrationRepository registrationRepository) {
-        this.qrCodeService = qrCodeService;
-        this.registrationRepository = registrationRepository;
+    public RegistrationController(RegistrationService registrationService, UserService userService) {
+        this.registrationService = registrationService;
+        this.userService = userService;
     }
 
-    // Rota pública (ou acessível apenas pelo próprio aluno) para gerar o QR Code
+    @PostMapping("/events/{eventId}")
+    public ResponseEntity<RegistrationResponseDTO> register(@PathVariable UUID eventId,
+            @AuthenticationPrincipal User user) {
+        var registration = userService.registerUserToEvent(user.getId(), eventId);
+        return ResponseEntity.status(201).body(RegistrationResponseDTO.from(registration));
+    }
+
+    // O QR Code fica acessível ao titular da inscrição e ao administrador.
     @GetMapping("/{id}/qrcode")
-    public ResponseEntity<String> getRegistrationQRCode(@PathVariable UUID id) {
-        String qrCode = this.qrCodeService.generateQRCodeBase64(id.toString());
+    public ResponseEntity<String> getRegistrationQRCode(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+        String qrCode = this.registrationService.getQRCode(id, user);
         return ResponseEntity.ok(qrCode);
     }
 
-  
     @PatchMapping("/{id}/checkin")
     public ResponseEntity<String> performCheckIn(@PathVariable UUID id) {
-        Registration registration = this.registrationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inscrição não encontrada."));
-
-        if (registration.isPresent()) {
-            return ResponseEntity.badRequest().body("Check-in já realizado anteriormente!");
-        }
-
-        registration.setPresent(true);
-        this.registrationRepository.save(registration);
+        this.registrationService.checkIn(id);
 
         return ResponseEntity.ok("Check-in realizado com sucesso! Entrada autorizada.");
     }

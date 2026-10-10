@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import com.ueg.eventplataform.repositories.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import com.ueg.eventplataform.domain.infra_security.TokenService;
 import com.ueg.eventplataform.domain.users.AuthenticationDTO;
 import com.ueg.eventplataform.domain.users.LoginRespDTO;
@@ -19,42 +18,40 @@ import com.ueg.eventplataform.domain.users.RegisterDTO;
 import com.ueg.eventplataform.domain.users.User;
 import com.ueg.eventplataform.domain.users.UserRole;
 
-
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired 
+    @Autowired
     private TokenService tokenService;
 
     private final AuthenticationManager authenticationManager;
-    
+
     private final UserRepository userRepository;
 
-    AuthController (UserRepository userRepository, AuthenticationManager authenticationManager) {
+    AuthController(UserRepository userRepository, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/login")
-    public ResponseEntity login (@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var authentication = authenticationManager.authenticate(usernamePassword);
 
         var token = tokenService.generateToken((User) authentication.getPrincipal());
-        
+
         return ResponseEntity.ok(new LoginRespDTO(token));
     }
 
     @PostMapping("/register")
-public ResponseEntity register (@RequestBody @Valid RegisterDTO data) {
-    if(this.userRepository.findByEmail(data.email()) != null) {
-        return ResponseEntity.badRequest().build();
-    }  
-    String hashedPassword = new BCryptPasswordEncoder().encode(data.password());
-    User newUser = new User(data.name(), data.email(), hashedPassword, UserRole.USER); 
-    this.userRepository.save(newUser);
-    return ResponseEntity.ok().build();
-}
+    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
+        if (this.userRepository.findByEmail(data.email()) != null) {
+            return ResponseEntity.badRequest().build();
+        }
+        String hashedPassword = new BCryptPasswordEncoder().encode(data.password());
+        User newUser = new User(data.name(), data.email(), hashedPassword, UserRole.USER);
+        this.userRepository.save(newUser);
+        return ResponseEntity.ok().build();
+    }
 
 }

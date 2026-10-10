@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.ueg.eventplataform.repositories.UserRepository;
 
 @Service
-public class UserAuth implements UserDetailsService{
-    
+public class UserAuth implements UserDetailsService {
+
     final UserRepository repository;
 
     UserAuth(UserRepository repository) {
@@ -18,9 +18,8 @@ public class UserAuth implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-       
+
         return repository.findByEmail(username);
     }
-    
-}
 
+}

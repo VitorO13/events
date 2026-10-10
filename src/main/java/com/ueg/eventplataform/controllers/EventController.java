@@ -17,14 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
-
 @RestController
 @RequestMapping("/events")
 
 public class EventController {
-private final EventService eventService;
+    private final EventService eventService;
 
     public EventController(EventService eventService) {
         this.eventService = eventService;
@@ -60,4 +57,3 @@ private final EventService eventService;
         return ResponseEntity.noContent().build();
     }
 }
-  

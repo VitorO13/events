@@ -7,15 +7,14 @@ import com.ueg.eventplataform.domain.event.Event;
 import com.ueg.eventplataform.domain.event.EventDTO;
 import com.ueg.eventplataform.repositories.EventRepository;
 
-@Service 
+@Service
 public class EventService {
-    
+
     private final EventRepository eventRepository;
-   
 
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
-      
+
     }
 
     private Event toEntity(EventDTO data) {

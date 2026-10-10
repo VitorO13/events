@@ -17,8 +17,6 @@ class EventServiceTest {
 
     @Mock
     private EventRepository eventRepository;
-
-
     @InjectMocks
     private EventService eventService;
 
