@@ -26,13 +26,17 @@ public class SecurityConf {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/", "/index.html", "/style.css", "/script.js").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/participant/login", "/auth/desktop/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/users/{id}/role").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN")
 
                         // 2. Rotas de Eventos
+                        .requestMatchers(HttpMethod.GET, "/events/*/image").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/events/*/image").hasRole("HOST")
                         .requestMatchers(HttpMethod.GET, "/events").permitAll()
                         .requestMatchers(HttpMethod.GET, "/events/{id}").permitAll()
                         // 3 Rota QrCode

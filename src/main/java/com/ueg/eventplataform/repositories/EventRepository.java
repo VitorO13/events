@@ -12,12 +12,11 @@ import org.springframework.data.repository.query.Param;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
 public interface EventRepository extends JpaRepository<Event, UUID> {
    @Lock(LockModeType.PESSIMISTIC_WRITE)
    @Query("select e from Event e where e.id = :id")
    Optional<Event> findByIdForUpdate(@Param("id") UUID id);
-    
+
    Event findByName(String name);
 
    List<Event> findByNameContainingIgnoreCase(String name);

@@ -29,5 +29,15 @@ public class Event {
     private Date date;
     private String description;
     private int capacity;
+    @jakarta.persistence.Lob
+    @jakarta.persistence.Column(columnDefinition = "LONGBLOB")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private byte[] image;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private String imageContentType;
+
+    public String getImageUrl() {
+        return image == null ? null : "/events/" + id + "/image";
+    }
 
 }

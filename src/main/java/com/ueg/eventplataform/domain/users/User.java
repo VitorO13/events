@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private UUID id;
 
     private String name;
-    
+
     private String email;
 
     private String password;
@@ -49,17 +49,19 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.ADMIN)return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_HOST"));
-        else if(this.role == UserRole.HOST)return List.of(new SimpleGrantedAuthority("ROLE_HOST"), new SimpleGrantedAuthority("ROLE_USER"));
-        else {return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-       
-            
+        if (this.role == UserRole.ADMIN)
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_HOST"));
+        else if (this.role == UserRole.HOST)
+            return List.of(new SimpleGrantedAuthority("ROLE_HOST"), new SimpleGrantedAuthority("ROLE_USER"));
+        else {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
         }
     }
 
     @Override
     public @Nullable String getPassword() {
-        if(this.password == null) {
+        if (this.password == null) {
             throw new IllegalArgumentException("Password cannot be null");
         }
         return this.password;
@@ -67,11 +69,12 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        if(this.email == null) {
+        if (this.email == null) {
             throw new IllegalArgumentException("Email cannot be null");
         }
         return this.email;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

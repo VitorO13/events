@@ -9,12 +9,14 @@ import java.util.UUID;
 
 public interface RegistrationRepository extends JpaRepository<Registration, UUID> {
     long countByEventId(UUID eventId);
+
+    java.util.List<com.ueg.eventplataform.domain.registration.Registration> findByUserId(UUID userId);
+
     boolean existsByUserIdAndEventId(UUID userId, UUID eventId);
+
     boolean existsByUserId(UUID userId);
 
     @Modifying
     @Query("update registrations r set r.isPresent = true where r.id = :id and r.isPresent = false")
     int checkInIfAbsent(@Param("id") UUID id);
 }
-
-

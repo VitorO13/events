@@ -10,8 +10,8 @@ import java.util.UUID;
 
 @Entity(name = "registrations")
 @Table(name = "registrations")
-@Getter 
-@Setter 
+@Getter
+@Setter
 public class Registration {
 
     @Id

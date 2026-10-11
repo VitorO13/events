@@ -40,10 +40,16 @@ public class UserController {
 
     @PutMapping("/{id}/role")
     public ResponseEntity<Void> updateUserRole(@PathVariable UUID id, @RequestBody @Valid UpdateRoleDTO data) {
+        if (data.role() == com.ueg.eventplataform.domain.users.UserRole.ADMIN) {
+            return ResponseEntity.status(403).build();
+        }
         User user = this.userRepository.findById(id).orElse(null);
 
         if (user == null) {
             return ResponseEntity.notFound().build();
+        }
+        if (user.getRole() == com.ueg.eventplataform.domain.users.UserRole.ADMIN) {
+            return ResponseEntity.status(403).build();
         }
 
         user.setRole(data.role());

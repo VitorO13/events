@@ -31,6 +31,11 @@ public class UserService {
 
     @Transactional
     public void deleteUser(UUID id) {
+        User existingUser = userRepository.findById(id).orElse(null);
+        if (existingUser != null && existingUser.getRole() == com.ueg.eventplataform.domain.users.UserRole.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Administradores são mantidos manualmente no banco de dados.");
+        }
         if (!this.userRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado.");
         }

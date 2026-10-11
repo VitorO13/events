@@ -30,6 +30,11 @@ public class RegistrationController {
         return ResponseEntity.status(201).body(RegistrationResponseDTO.from(registration));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<java.util.List<RegistrationResponseDTO>> myRegistrations(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(registrationService.listForUser(user.getId()));
+    }
+
     // O QR Code fica acessível ao titular da inscrição e ao administrador.
     @GetMapping("/{id}/qrcode")
     public ResponseEntity<String> getRegistrationQRCode(@PathVariable UUID id, @AuthenticationPrincipal User user) {

@@ -22,6 +22,12 @@ public class RegistrationService {
     }
 
     @Transactional(readOnly = true)
+    public java.util.List<com.ueg.eventplataform.domain.registration.RegistrationResponseDTO> listForUser(UUID userId) {
+        return registrationRepository.findByUserId(userId).stream()
+                .map(com.ueg.eventplataform.domain.registration.RegistrationResponseDTO::from).toList();
+    }
+
+    @Transactional(readOnly = true)
     public String getQRCode(UUID id, User requester) {
         Registration registration = registrationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscrição não encontrada."));
