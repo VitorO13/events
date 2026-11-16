@@ -1,12 +1,12 @@
 package com.ueg.eventplataform.domain.event;
 
-import java.sql.Date;
-import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.sql.Date;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,24 +20,26 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Event {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String name;
-    private String hour;
-    private byte duration;
-    private Date date;
-    private String description;
-    private int capacity;
-    @jakarta.persistence.Lob
-    @jakarta.persistence.Column(columnDefinition = "LONGBLOB")
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private byte[] image;
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private String imageContentType;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    public String getImageUrl() {
-        return image == null ? null : "/events/" + id + "/image";
-    }
+  private String name;
+  private String hour;
+  private byte duration;
+  private Date date;
+  private String description;
+  private int capacity;
 
+  @jakarta.persistence.Lob
+  @jakarta.persistence.Column(columnDefinition = "LONGBLOB")
+  @com.fasterxml.jackson.annotation.JsonIgnore
+  private byte[] image;
+
+  @com.fasterxml.jackson.annotation.JsonIgnore
+  private String imageContentType;
+
+  public String getImageUrl() {
+    return image == null ? null : "/events/" + id + "/image";
+  }
 }

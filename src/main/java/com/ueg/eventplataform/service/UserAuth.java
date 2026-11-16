@@ -1,29 +1,28 @@
 package com.ueg.eventplataform.service;
 
+import com.ueg.eventplataform.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ueg.eventplataform.repositories.UserRepository;
-
 @Service
 public class UserAuth implements UserDetailsService {
 
-    final UserRepository repository;
+  final UserRepository repository;
 
-    UserAuth(UserRepository repository) {
-        this.repository = repository;
+  UserAuth(UserRepository repository) {
+    this.repository = repository;
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(
+    String username
+  ) throws UsernameNotFoundException {
+    UserDetails user = repository.findByEmail(username);
+    if (user == null) {
+      throw new UsernameNotFoundException("Usuário não encontrado.");
     }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserDetails user = repository.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("Usuário não encontrado.");
-        }
-        return user;
-    }
-
+    return user;
+  }
 }
