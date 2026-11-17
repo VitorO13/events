@@ -37,7 +37,10 @@ public class SecurityConf {
             "/",
             "/index.html",
             "/style.css",
-            "/script.js"
+            "/script.js",
+            "/events.html",
+            "/events.css",
+            "/events.js"
           )
           .permitAll()
           .requestMatchers(HttpMethod.POST, "/auth/login")
