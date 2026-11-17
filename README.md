@@ -89,8 +89,54 @@ Responsáveis pela comunicação com tecnologias externas, incluindo:
 
 ### Pré-requisitos
 
-* **JDK 17 ou superior**
+* **JDK 21 ou superior**
 * Maven Wrapper (`mvnw`)
+
+### Criar a primeira conta de administrador local
+
+1. Crie o banco `eventplatform` no MariaDB, se ele ainda não existir. Na raiz do projeto, configure o arquivo `.env` com os dados da sua instalação local:
+
+   ```dotenv
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_NAME=eventplatform
+   DB_USER=seu_usuario_mariadb
+   DB_PASSWORD=sua_senha_mariadb
+   JWT_SECRET=troque-por-um-segredo-local-aleatorio
+   ```
+
+   O usuário do MariaDB precisa ter permissão para rodar as migrações do Flyway e atualizar a tabela `users`.
+
+2. Inicie o Spring Boot na raiz do projeto com `./mvnw spring-boot:run` (no Windows, `mvnw.cmd spring-boot:run`). Abra [Criar conta](http://localhost:3000/events.html#cadastro) e cadastre o e-mail fictício `admin.demo@example.com` com uma senha de sua escolha de pelo menos 8 caracteres. Guarde essa senha para o login.
+
+3. Em outro terminal, conecte-se ao banco. Substitua o usuário pelos dados do seu `.env` e informe a senha do MariaDB quando solicitado:
+
+   ```bash
+   mariadb -h localhost -P 3306 -u seu_usuario_mariadb -p eventplatform
+   ```
+
+   Execute o SQL abaixo (ajuste o e-mail caso tenha cadastrado outro). O valor `0` corresponde à role `ADMIN`. A consulta deve retornar uma linha com o e-mail cadastrado e a role `0`.
+
+   ```sql
+   UPDATE users SET role = 0 WHERE email = 'admin.demo@example.com';
+   SELECT email, role FROM users WHERE email = 'admin.demo@example.com';
+   ```
+
+4. Entre pelo aplicativo desktop com o e-mail e a senha do cadastro. Para testar pela API, substitua `SENHA_DO_CADASTRO` pela senha que você escolheu. O login retorna um token JWT:
+
+   ```bash
+   curl -fsS http://localhost:3000/auth/desktop/login \
+     -H 'Content-Type: application/json' \
+     -d '{"email":"admin.demo@example.com","password":"SENHA_DO_CADASTRO"}'
+   ```
+
+   A tela de login do site é exclusiva para participantes. Para confirmar a role pela API, envie o token retornado no passo anterior:
+
+   ```bash
+   curl -fsS http://localhost:3000/auth/me -H 'Authorization: Bearer SEU_TOKEN'
+   ```
+
+   A resposta deve mostrar `"role":"ADMIN"`.
 
 ### Executar os testes
 
